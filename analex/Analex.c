@@ -36,6 +36,15 @@ TOKEN reconheceOr(int *estado) {
     return t;
 }
 
+TOKEN reconheceAnd(int *estado) {
+    TOKEN t;
+    *estado = 47;
+    t.cat = SN;
+    t.codigo = OPERADOR_AND;
+    return t;
+}
+
+
 TOKEN AnaLex(FILE *fd)
 {
     int estado;
@@ -207,11 +216,7 @@ TOKEN AnaLex(FILE *fd)
         case 45:
             if (LEU_E_COMERCIAL)
             {
-                estado = 47;
-                t.cat = SN;
-                t.codigo = OPERADOR_AND;
-
-                return t;
+                return reconheceAnd(&estado);
             }
             else
             {
