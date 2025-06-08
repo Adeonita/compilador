@@ -265,9 +265,6 @@ int main()
             printf("<CT_I, %d> ", tk.valInt);
             break;
         
-        case CT_REAL:
-            printf("<CT_REAL, %d> ", tk.realVal);
-            break;
 
         case FIM_EXPR:
             printf("<FIM_EXPR, %d>\n", 0);
