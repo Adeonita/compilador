@@ -75,10 +75,11 @@ TOKEN AnaLex(FILE *fd)
                     lexema[tamL] = c;
                     lexema[++tamL] = '\0';
                 }
-                
-                // else if (LEU_PIPE) {
-
-                // }
+                else if (LEU_PIPE) {
+                    estado = 43;
+                    lexema[tamL] = c;
+                    lexema[++tamL] = '\0';
+                }
                 
                 else
                     error("Caracter invalido na expressao!");
@@ -158,6 +159,18 @@ TOKEN AnaLex(FILE *fd)
                     return t;
                 }
                 break;
+            case 43:
+                if (LEU_PIPE) {
+                    estado = 44;
+                    t.cat = SN;
+                    t.codigo = OPERADOR_OR;
+
+                    return t;
+                } else {
+                    printf("Caractere invalido no ESTADO 43!");
+                    exit(1);
+                }
+
             case 45:
                 if (LEU_E_COMERCIAL){
                     estado = 47;
@@ -174,6 +187,7 @@ TOKEN AnaLex(FILE *fd)
 
                     return t;
                 }
+                break;
         }
     }
 }
@@ -206,9 +220,11 @@ int main()
 
                 case ABRE_PAR: printf("<SN, ABRE_PARENTESES> "); break;
                 case FECHA_PAR: printf("<SN, FECHA_PARENTESES> "); break;
-
+                
+                case OPERADOR_OR: printf("<SN, OPERADOR_OR> "); break;
                 case OPERADOR_AND: printf("<SN, OPERADOR_AND> "); break;
                 case PONTEIRO: printf("<SN, PONTEIRO> "); break;
+
             } break;
 
             case CT_I: printf("<CT_I, %d> ", tk.valInt); break;

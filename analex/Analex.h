@@ -8,7 +8,7 @@ enum TOKEN_CAT { ID=1, SN, CT_I, CT_REAL, FIM_EXPR, FIM_ARQ };
  
 enum SINAIS {   
                 ATRIB = 1, ADICAO, SUBTRACAO, MULTIPLIC, DIVISAO, ABRE_PAR, FECHA_PAR, 
-                COMPARACAO, PONTEIRO, OPERADOR_AND
+                COMPARACAO, PONTEIRO, OPERADOR_AND, OPERADOR_OR
             }; // Sinais válidos da linguagem
 
 typedef
