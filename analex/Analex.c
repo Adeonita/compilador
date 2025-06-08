@@ -14,6 +14,17 @@ void error(char msg[])
     exit(1);
 }
 
+void mudaEstadoEIncrementaLexema(int *estado, int novoEstado, char *lexema, int *tamL, char c){
+    *estado = novoEstado;
+    lexema[*tamL] = c;
+    lexema[++(*tamL)] = '\0';
+}
+
+void mudaEstadoEIncrementaDigito(int *estado, int novoEstado, char *digitos, int *tamD, char c) {
+    *estado = novoEstado;
+    digitos[*tamD] = c;
+    digitos[++(*tamD)] = '\0';
+}
 
 TOKEN AnaLex(FILE *fd)
 {
@@ -52,14 +63,10 @@ TOKEN AnaLex(FILE *fd)
                 if (c == ' ' || c == '\t'){
                     estado = 0;
                 }
-                else if (leuLetra) { //inicializa lexema
-                    estado = 1;
-                    lexema[tamL] = c;
-                    lexema[++tamL] = '\0';
-                } else if (leuDigito) { // inicio de constante inteira - inicializa digitos
-                    estado = 3;
-                    digitos[tamD] = c;
-                    digitos[++tamD] = '\0';
+                else if (leuLetra) {
+                    mudaEstadoEIncrementaLexema(&estado, 1, lexema, &tamL, c);
+                } else if (leuDigito) {
+                    mudaEstadoEIncrementaDigito(&estado, 3, digitos, &tamD, c);
                 } else if (leuSinalDeIgual) {
                     estado = 27;
                 } else if (leuQuebraDeLinha) {
@@ -71,13 +78,12 @@ TOKEN AnaLex(FILE *fd)
                     t.cat = FIM_ARQ;
                     return t;
                 } else if (LEU_E_COMERCIAL) {
-                    estado = 45;
-                    lexema[tamL] = c;
-                    lexema[++tamL] = '\0';
+                    mudaEstadoEIncrementaLexema(&estado, 45, lexema, &tamL, c);
                 } else if (LEU_PIPE) {
-                    estado = 43;
-                    lexema[tamL] = c;
-                    lexema[++tamL] = '\0';
+                    mudaEstadoEIncrementaLexema(&estado, 43, lexema, &tamL, c);
+                } else if (LEU_EXCLAMACAO) {
+                    estado = 40;
+
                 }
                 
                 else
@@ -86,9 +92,7 @@ TOKEN AnaLex(FILE *fd)
                 break;
             case 1:
                 if (leuLetraOuDigitoOuUnderscore) {
-                    estado = 1;
-                    lexema[tamL] = c;
-                    lexema[++tamL] = '\0';
+                    mudaEstadoEIncrementaLexema(&estado, 1, lexema, &tamL, c);
                 } else {
                     // transicao OUTRO* do estado 1 do AFD
 
@@ -103,13 +107,11 @@ TOKEN AnaLex(FILE *fd)
 
             case 3:
                 if (leuDigito) {
-                    estado = 3;
-                    digitos[tamD] = c;
-                    digitos[++tamD] = '\0';
-                } else if (leuPonto) {
-                    estado = 5;
-                    digitos[tamD] = c;
-                    digitos[++tamD] = '\0';
+                    mudaEstadoEIncrementaDigito(&estado, 3, digitos, &tamD, c);
+
+                } else if (leuPonto) { //DUVIDA: devo incrementar o dígito quando ler ponto?
+                    mudaEstadoEIncrementaDigito(&estado, 5, digitos, &tamD, c);
+
                 } else {
                     estado = 4;
                     ungetc(c, fd);
@@ -120,9 +122,7 @@ TOKEN AnaLex(FILE *fd)
                 break;
             case 5:
             if (leuDigito) {
-                estado = 6;
-                digitos[tamD] = c;
-                digitos[++tamD] = '\0';
+                mudaEstadoEIncrementaDigito(&estado, 6, digitos, &tamD, c);
             } else {
                 printf("Caractere invalido no ESTADO 3!");
                 exit(1);
@@ -148,13 +148,11 @@ TOKEN AnaLex(FILE *fd)
                     estado = 29;
                     t.cat = SN;
                     t.codigo = COMPARACAO;
-
                     return t;
                 } else {
                     estado = 28;
                     t.cat  = SN;
                     t.codigo = ATRIB;
-
                     return t;
                 }
                 break;
@@ -223,6 +221,7 @@ int main()
                     case OPERADOR_OR: printf("<SN, OPERADOR_OR> "); break;
                     case OPERADOR_AND: printf("<SN, OPERADOR_AND> "); break;
                     case PONTEIRO: printf("<SN, PONTEIRO> "); break;
+                    case OPERADOR_DIFERENTE: printf("<SN, OPERADOR_DIFERENTE> "); break;
 
                 } break;
 
