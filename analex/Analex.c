@@ -4,6 +4,8 @@
 #include <string.h>
 #include <stdbool.h>
 #include "Analex.h"
+//#include "reconhecedores.h"
+
 
 #define TAM_LEXEMA 50
 #define TAM_NUM 20
@@ -27,6 +29,7 @@ void mudaEstadoEIncrementaDigito(int *estado, int novoEstado, char *digitos, int
     digitos[*tamD] = c;
     digitos[++(*tamD)] = '\0';
 }
+
 TOKEN reconhecedorBase(char categoria, char codigo){
     TOKEN t;
     t.cat = categoria;
