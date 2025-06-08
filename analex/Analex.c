@@ -28,6 +28,14 @@ void mudaEstadoEIncrementaDigito(int *estado, int novoEstado, char *digitos, int
     digitos[++(*tamD)] = '\0';
 }
 
+TOKEN reconheceOr(int *estado) {
+    TOKEN t;
+    *estado = 44;
+    t.cat = SN;
+    t.codigo = OPERADOR_OR;
+    return t;
+}
+
 TOKEN AnaLex(FILE *fd)
 {
     int estado;
@@ -188,11 +196,7 @@ TOKEN AnaLex(FILE *fd)
         case 43:
             if (LEU_PIPE)
             {
-                estado = 44;
-                t.cat = SN;
-                t.codigo = OPERADOR_OR;
-
-                return t;
+                return reconheceOr(&estado);
             }
             else
             {
