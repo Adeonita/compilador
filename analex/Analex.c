@@ -74,8 +74,7 @@ TOKEN AnaLex(FILE *fd)
                     estado = 45;
                     lexema[tamL] = c;
                     lexema[++tamL] = '\0';
-                }
-                else if (LEU_PIPE) {
+                } else if (LEU_PIPE) {
                     estado = 43;
                     lexema[tamL] = c;
                     lexema[++tamL] = '\0';
@@ -212,20 +211,20 @@ int main()
             case SN:
                 switch (tk.codigo)
                 {
-                case ADICAO: printf("<SN, ADICAO> "); break;
-                case SUBTRACAO: printf("<SN, SUBTRACAO> "); break;
-                case MULTIPLIC: printf("<SN, MULTIPLICACAO> "); break;
-                case DIVISAO: printf("<SN, DIVISAO> "); break;
-                case ATRIB: printf("<SN, ATRIBUICAO> "); break;
+                    case ADICAO: printf("<SN, ADICAO> "); break;
+                    case SUBTRACAO: printf("<SN, SUBTRACAO> "); break;
+                    case MULTIPLIC: printf("<SN, MULTIPLICACAO> "); break;
+                    case DIVISAO: printf("<SN, DIVISAO> "); break;
+                    case ATRIB: printf("<SN, ATRIBUICAO> "); break;
 
-                case ABRE_PAR: printf("<SN, ABRE_PARENTESES> "); break;
-                case FECHA_PAR: printf("<SN, FECHA_PARENTESES> "); break;
-                
-                case OPERADOR_OR: printf("<SN, OPERADOR_OR> "); break;
-                case OPERADOR_AND: printf("<SN, OPERADOR_AND> "); break;
-                case PONTEIRO: printf("<SN, PONTEIRO> "); break;
+                    case ABRE_PAR: printf("<SN, ABRE_PARENTESES> "); break;
+                    case FECHA_PAR: printf("<SN, FECHA_PARENTESES> "); break;
+                    
+                    case OPERADOR_OR: printf("<SN, OPERADOR_OR> "); break;
+                    case OPERADOR_AND: printf("<SN, OPERADOR_AND> "); break;
+                    case PONTEIRO: printf("<SN, PONTEIRO> "); break;
 
-            } break;
+                } break;
 
             case CT_I: printf("<CT_I, %d> ", tk.valInt); break;
             
