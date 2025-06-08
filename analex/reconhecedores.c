@@ -27,3 +27,21 @@ TOKEN reconheceAtribuicao(int *estado) {
     *estado = 28;
     return reconhecedorBase(SN, ATRIB);
 }
+
+// TOKEN reconheceConstInt(int *estado, FILE *fd, const char *digitos, char c) {
+//     TOKEN t;
+//     *estado = 4;
+//     ungetc(c, fd);
+//     t.cat = CT_I;
+//     t.valInt = atoi(digitos);
+//     return t;
+// }
+
+// TOKEN reconheceConstReal(int *estado, FILE *fd, const char *digitos, char c) {
+//     TOKEN t;
+//     *estado = 48;
+//     ungetc(c, fd);
+//     t.cat = CT_REAL;
+//     t.realVal = atof(digitos);
+//     return t;
+// }

@@ -58,6 +58,25 @@ TOKEN reconheceAtribuicao(int *estado) {
     return reconhecedorBase(SN, ATRIB);
 }
 
+TOKEN reconheceConstInt(int *estado, FILE *fd, const char *digitos, char c) {
+    TOKEN t;
+    *estado = 4;
+    ungetc(c, fd);
+    t.cat = CT_I;
+    t.valInt = atoi(digitos);
+    return t;
+}
+
+TOKEN reconheceConstReal(int *estado, FILE *fd, const char *digitos, char c) {
+    TOKEN t;
+    *estado = 48;
+    ungetc(c, fd);
+    t.cat = CT_REAL;
+    t.realVal = atof(digitos);
+    return t;
+}
+
+
 
 TOKEN AnaLex(FILE *fd)
 {
@@ -166,11 +185,7 @@ TOKEN AnaLex(FILE *fd)
             }
             else
             {
-                estado = 4;
-                ungetc(c, fd);
-                t.cat = CT_I;
-                t.valInt = atoi(digitos);
-                return t;
+                return reconheceConstInt(&estado, fd, digitos, c);
             }
             break;
         case 5:
@@ -190,12 +205,7 @@ TOKEN AnaLex(FILE *fd)
             }
             else
             {
-                estado = 48;
-                ungetc(c, fd);
-                t.cat = CT_REAL;
-                t.realVal = atof(digitos);
-                // strcpy(t.lexema, lexema);
-                return t;
+                return reconheceConstReal(&estado, fd, digitos, c);
             }
             break;
 
