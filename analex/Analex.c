@@ -52,13 +52,14 @@ TOKEN reconheceAnd(int *estado)
 
 TOKEN reconheceComparacao(int *estado)
 {
-    *estado = 29;
+    *estado = 28;
     return reconhecedorBase(SN, COMPARACAO);
 }
 
-TOKEN reconheceAtribuicao(int *estado)
-{
-    *estado = 28;
+TOKEN reconheceAtribuicao(int *estado, FILE *fd, const char c) {
+    *estado = 29;
+    ungetc(c, fd);
+
     return reconhecedorBase(SN, ATRIB);
 }
 
@@ -73,6 +74,23 @@ TOKEN reconheceDiferente(int *estado)
 {
     *estado = 42;
     return reconhecedorBase(SN, OPERADOR_DIFERENTE);
+}
+
+TOKEN reconheceMenorQue(int *estado, FILE *fd, const char c)
+{
+    *estado = 26;
+    ungetc(c, fd);
+
+    return reconhecedorBase(SN, MENOR_QUE);
+}
+
+
+TOKEN reconheceMenorOuIgual(int *estado)
+{
+    *estado = 25;
+    // ungetc(c, fd);
+
+    return reconhecedorBase(SN, MENOR_OU_IGUAL);
 }
 
 TOKEN reconheceConstInt(int *estado, FILE *fd, const char *digitos, char c)
@@ -126,6 +144,9 @@ TOKEN AnaLex(FILE *fd)
         bool LEU_MULTIPLICACAO = c == '*';
         bool LEU_BARRA = c == '/';
 
+        bool LEU_MAIOR_QUE = c == '>';
+        bool LEU_MENOR_QUE = c == '<';
+
         switch (estado)
         {
         case 0:
@@ -143,7 +164,7 @@ TOKEN AnaLex(FILE *fd)
             }
             else if (leuSinalDeIgual)
             {
-                estado = 27;
+                mudaEstadoEIncrementaLexema(&estado, 27, lexema, &tamL, c);
             }
             else if (LEU_E_COMERCIAL)
             {
@@ -156,7 +177,9 @@ TOKEN AnaLex(FILE *fd)
             else if (LEU_EXCLAMACAO)
             {
                 mudaEstadoEIncrementaLexema(&estado, 40, lexema, &tamL, c);
-                // estado = 40;
+            }
+            else if (LEU_MENOR_QUE) {
+                mudaEstadoEIncrementaLexema(&estado, 24, lexema, &tamL, c);
             }
 
             else if (leuQuebraDeLinha)
@@ -226,6 +249,13 @@ TOKEN AnaLex(FILE *fd)
                 return reconheceConstReal(&estado, fd, digitos, c);
             }
             break;
+        case 24:
+            if (leuSinalDeIgual) {
+                return reconheceMenorOuIgual(&estado);
+            }
+            else {
+                return reconheceMenorQue(&estado, fd, c);
+            }
 
         case 27:
             if (leuSinalDeIgual)
@@ -234,7 +264,7 @@ TOKEN AnaLex(FILE *fd)
             }
             else
             {
-                return reconheceAtribuicao(&estado);
+                return reconheceAtribuicao(&estado, fd, c);
             }
             break;
         case 40:
@@ -321,7 +351,9 @@ int main()
             case FECHA_PAR:
                 printf("<SN, FECHA_PARENTESES> ");
                 break;
-
+            case COMPARACAO:
+                printf("<SN, COMPARACAO> ");
+                break;
             case OPERADOR_OR:
                 printf("<SN, OPERADOR_OR> ");
                 break;
@@ -336,6 +368,12 @@ int main()
                 break;
             case OPERADOR_DIFERENTE:
                 printf("<SN, OPERADOR_DIFERENTE> ");
+                break;
+            case MENOR_QUE:
+                printf("<SN, MENOR_QUE> ");
+                break;
+            case MENOR_OU_IGUAL:
+                printf("<SN, MENOR_OU_IGUAL> ");
                 break;
             }
             break;
