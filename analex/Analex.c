@@ -58,6 +58,17 @@ TOKEN reconheceAtribuicao(int *estado) {
     return reconhecedorBase(SN, ATRIB);
 }
 
+TOKEN reconheceNegacao(int *estado, FILE *fd, const char c) {
+    *estado = 41;
+    ungetc(c, fd);
+    return reconhecedorBase(SN, OPERADOR_NEGACAO);
+}
+
+TOKEN reconheceDiferente(int *estado) {
+    *estado = 42;
+    return reconhecedorBase(SN, OPERADOR_DIFERENTE);
+}
+
 TOKEN reconheceConstInt(int *estado, FILE *fd, const char *digitos, char c) {
     TOKEN t;
     *estado = 4;
@@ -75,7 +86,6 @@ TOKEN reconheceConstReal(int *estado, FILE *fd, const char *digitos, char c) {
     t.realVal = atof(digitos);
     return t;
 }
-
 
 
 TOKEN AnaLex(FILE *fd)
@@ -138,7 +148,8 @@ TOKEN AnaLex(FILE *fd)
             }
             else if (LEU_EXCLAMACAO)
             {
-                estado = 40;
+                mudaEstadoEIncrementaLexema(&estado, 40, lexema, &tamL, c);
+                //estado = 40;
             }
 
             else if (leuQuebraDeLinha)
@@ -219,6 +230,12 @@ TOKEN AnaLex(FILE *fd)
                 return reconheceAtribuicao(&estado);
             }
             break;
+        case 40:
+            if (leuSinalDeIgual) {
+                return reconheceDiferente(&estado);
+            } else {
+                return reconheceNegacao(&estado, fd, c);
+            }
         case 43:
             if (LEU_PIPE)
             {
@@ -303,6 +320,9 @@ int main()
                 break;
             case PONTEIRO:
                 printf("<SN, PONTEIRO> ");
+                break;
+            case OPERADOR_NEGACAO:
+                printf("<SN, OPERADOR_NEGACAO> ");
                 break;
             case OPERADOR_DIFERENTE:
                 printf("<SN, OPERADOR_DIFERENTE> ");
