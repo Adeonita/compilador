@@ -177,8 +177,7 @@ TOKEN AnaLex(FILE *fd)
             }
             else
             {
-                printf("Caractere invalido no ESTADO 3!");
-                exit(1);
+                error("Caractere invalido no ESTADO 3!");
             }
             break;
         case 6:
@@ -214,8 +213,7 @@ TOKEN AnaLex(FILE *fd)
             }
             else
             {
-                printf("Caractere invalido no ESTADO 43!");
-                exit(1);
+                error("Caractere invalido no ESTADO 43!");
             }
 
         case 45:
