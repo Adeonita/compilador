@@ -27,21 +27,32 @@ void mudaEstadoEIncrementaDigito(int *estado, int novoEstado, char *digitos, int
     digitos[*tamD] = c;
     digitos[++(*tamD)] = '\0';
 }
-
-TOKEN reconheceOr(int *estado) {
+TOKEN reconhecedorBase(char categoria, char codigo){
     TOKEN t;
-    *estado = 44;
-    t.cat = SN;
-    t.codigo = OPERADOR_OR;
+    t.cat = categoria;
+    t.codigo = codigo;
+
     return t;
 }
 
+TOKEN reconheceOr(int *estado) {
+    *estado = 44;
+    return reconhecedorBase(SN, OPERADOR_OR );
+}
+
 TOKEN reconheceAnd(int *estado) {
-    TOKEN t;
     *estado = 47;
-    t.cat = SN;
-    t.codigo = OPERADOR_AND;
-    return t;
+    return reconhecedorBase(SN, OPERADOR_AND);
+}
+
+TOKEN reconheceComparacao(int *estado) {
+    *estado = 29;
+    return reconhecedorBase(SN, COMPARACAO);
+}
+
+TOKEN reconheceAtribuicao(int *estado) {
+    *estado = 28;
+    return reconhecedorBase(SN, ATRIB);
 }
 
 
@@ -189,17 +200,11 @@ TOKEN AnaLex(FILE *fd)
         case 27:
             if (leuSinalDeIgual)
             {
-                estado = 29;
-                t.cat = SN;
-                t.codigo = COMPARACAO;
-                return t;
+                return reconheceComparacao(&estado);
             }
             else
             {
-                estado = 28;
-                t.cat = SN;
-                t.codigo = ATRIB;
-                return t;
+                return reconheceAtribuicao(&estado);
             }
             break;
         case 43:
