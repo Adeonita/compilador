@@ -6,7 +6,10 @@ enum TOKEN_CAT { ID=1, SN, CT_I, CT_REAL, FIM_EXPR, FIM_ARQ };
 
 /* Onde: ID: Identificador, SN: Sinal; CT_I: Constante numérica inteira */ 
  
-enum SINAIS {ATRIB = 1, ADICAO, SUBTRACAO, MULTIPLIC, DIVISAO, ABRE_PAR, FECHA_PAR, COMPARACAO}; // Sinais válidos da linguagem
+enum SINAIS {   
+                ATRIB = 1, ADICAO, SUBTRACAO, MULTIPLIC, DIVISAO, ABRE_PAR, FECHA_PAR, 
+                COMPARACAO, PONTEIRO, OPERADOR_AND
+            }; // Sinais válidos da linguagem
 
 typedef
     struct {

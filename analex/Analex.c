@@ -38,7 +38,14 @@ TOKEN AnaLex(FILE *fd)
         bool leuLetraOuDigitoOuUnderscore = (leuLetra) || (leuDigito) || (c == '_');
         bool leuQuebraDeLinha = c == '\n';
         bool leuPonto = c == '.';
-        
+        bool LEU_E_COMERCIAL = c == '&';
+        bool LEU_PIPE = c == '|';
+        bool LEU_EXCLAMACAO = c == '!';
+        bool LEU_ADICAO = c == '+';
+        bool LEU_SUBTRACAO = c == '-';
+        bool LEU_MULTIPLICACAO = c == '*';
+        bool LEU_BARRA = c == '/';
+
         switch (estado)
         {
             case 0:
@@ -63,7 +70,17 @@ TOKEN AnaLex(FILE *fd)
                 } else if (leuFimDeLinha){
                     t.cat = FIM_ARQ;
                     return t;
-                } else
+                } else if (LEU_E_COMERCIAL) {
+                    estado = 45;
+                    lexema[tamL] = c;
+                    lexema[++tamL] = '\0';
+                }
+                
+                // else if (LEU_PIPE) {
+
+                // }
+                
+                else
                     error("Caracter invalido na expressao!");
 
                 break;
@@ -140,6 +157,23 @@ TOKEN AnaLex(FILE *fd)
 
                     return t;
                 }
+                break;
+            case 45:
+                if (LEU_E_COMERCIAL){
+                    estado = 47;
+                    t.cat = SN;
+                    t.codigo = OPERADOR_AND;
+
+                    return t;
+
+                } else {
+                    estado = 46;
+                    ungetc(c, fd);
+                    t.cat = SN;
+                    t.codigo = PONTEIRO;
+
+                    return t;
+                }
         }
     }
 }
@@ -155,65 +189,38 @@ int main()
 
     printf("LINHA %d: ", contLinha);
 
-    while (1)
-    { // laço infinito para processar a expressão até o fim de arquivo
+    while (1) { // laço infinito para processar a expressão até o fim de arquivo
         tk = AnaLex(fd);
 
-        switch (tk.cat)
-        {
-        case ID:
-            printf("<ID, %s> ", tk.lexema);
-            break;
+        switch (tk.cat) {
+            case ID: printf("<ID, %s> ", tk.lexema); break;
 
-        case SN:
-            switch (tk.codigo)
-            {
-            case ADICAO:
-                printf("<SN, ADICAO> ");
+            case SN:
+                switch (tk.codigo)
+                {
+                case ADICAO: printf("<SN, ADICAO> "); break;
+                case SUBTRACAO: printf("<SN, SUBTRACAO> "); break;
+                case MULTIPLIC: printf("<SN, MULTIPLICACAO> "); break;
+                case DIVISAO: printf("<SN, DIVISAO> "); break;
+                case ATRIB: printf("<SN, ATRIBUICAO> "); break;
+
+                case ABRE_PAR: printf("<SN, ABRE_PARENTESES> "); break;
+                case FECHA_PAR: printf("<SN, FECHA_PARENTESES> "); break;
+
+                case OPERADOR_AND: printf("<SN, OPERADOR_AND> "); break;
+                case PONTEIRO: printf("<SN, PONTEIRO> "); break;
+            } break;
+
+            case CT_I: printf("<CT_I, %d> ", tk.valInt); break;
+            
+            case CT_REAL: printf("<CT_REAL, %f> ", tk.realVal); break;
+
+            case FIM_EXPR:
+                printf("<FIM_EXPR, %d>\n", 0);
+                printf("LINHA %d: ", contLinha);
                 break;
 
-            case SUBTRACAO:
-                printf("<SN, SUBTRACAO> ");
-                break;
-
-            case MULTIPLIC:
-                printf("<SN, MULTIPLICACAO> ");
-                break;
-
-            case DIVISAO:
-                printf("<SN, DIVISAO> ");
-                break;
-
-            case ATRIB:
-                printf("<SN, ATRIBUICAO> ");
-                break;
-
-            case ABRE_PAR:
-                printf("<SN, ABRE_PARENTESES> ");
-                break;
-
-            case FECHA_PAR:
-                printf("<SN, FECHA_PARENTESES> ");
-                break;
-            }
-
-            break;
-
-        case CT_I:
-            printf("<CT_I, %d> ", tk.valInt);
-            break;
-        
-        case CT_REAL:
-            printf("<CT_REAL, %f> ", tk.realVal);
-            break;
-
-        case FIM_EXPR:
-            printf("<FIM_EXPR, %d>\n", 0);
-            printf("LINHA %d: ", contLinha);
-            break;
-
-        case FIM_ARQ:
-            printf(" <Fim do arquivo encontrado>\n");
+            case FIM_ARQ: printf(" <Fim do arquivo encontrado>\n"); break;
         }
 
         if (tk.cat == FIM_ARQ)

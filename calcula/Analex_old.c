@@ -229,8 +229,7 @@ int main()
             break;
 
         case SN:
-            switch (tk.codigo)
-            {
+            switch (tk.codigo) {
             case ADICAO:
                 printf("<SN, ADICAO> ");
                 break;
