@@ -4,8 +4,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include "Analex.h"
-//#include "reconhecedores.h"
-
+// #include "reconhecedores.h"
 
 #define TAM_LEXEMA 50
 #define TAM_NUM 20
@@ -30,7 +29,8 @@ void mudaEstadoEIncrementaDigito(int *estado, int novoEstado, char *digitos, int
     digitos[++(*tamD)] = '\0';
 }
 
-TOKEN reconhecedorBase(char categoria, char codigo){
+TOKEN reconhecedorBase(char categoria, char codigo)
+{
     TOKEN t;
     t.cat = categoria;
     t.codigo = codigo;
@@ -38,38 +38,45 @@ TOKEN reconhecedorBase(char categoria, char codigo){
     return t;
 }
 
-TOKEN reconheceOr(int *estado) {
+TOKEN reconheceOr(int *estado)
+{
     *estado = 44;
-    return reconhecedorBase(SN, OPERADOR_OR );
+    return reconhecedorBase(SN, OPERADOR_OR);
 }
 
-TOKEN reconheceAnd(int *estado) {
+TOKEN reconheceAnd(int *estado)
+{
     *estado = 47;
     return reconhecedorBase(SN, OPERADOR_AND);
 }
 
-TOKEN reconheceComparacao(int *estado) {
+TOKEN reconheceComparacao(int *estado)
+{
     *estado = 29;
     return reconhecedorBase(SN, COMPARACAO);
 }
 
-TOKEN reconheceAtribuicao(int *estado) {
+TOKEN reconheceAtribuicao(int *estado)
+{
     *estado = 28;
     return reconhecedorBase(SN, ATRIB);
 }
 
-TOKEN reconheceNegacao(int *estado, FILE *fd, const char c) {
+TOKEN reconheceNegacao(int *estado, FILE *fd, const char c)
+{
     *estado = 41;
     ungetc(c, fd);
     return reconhecedorBase(SN, OPERADOR_NEGACAO);
 }
 
-TOKEN reconheceDiferente(int *estado) {
+TOKEN reconheceDiferente(int *estado)
+{
     *estado = 42;
     return reconhecedorBase(SN, OPERADOR_DIFERENTE);
 }
 
-TOKEN reconheceConstInt(int *estado, FILE *fd, const char *digitos, char c) {
+TOKEN reconheceConstInt(int *estado, FILE *fd, const char *digitos, char c)
+{
     TOKEN t;
     *estado = 4;
     ungetc(c, fd);
@@ -78,15 +85,15 @@ TOKEN reconheceConstInt(int *estado, FILE *fd, const char *digitos, char c) {
     return t;
 }
 
-TOKEN reconheceConstReal(int *estado, FILE *fd, const char *digitos, char c) {
+TOKEN reconheceConstReal(int *estado, FILE *fd, const char *digitos, char c)
+{
     TOKEN t;
     *estado = 48;
-    ungetc(c, fd);
+    ungetc(c, fd); //precisa do atof e do ungetc ?
     t.cat = CT_REAL;
     t.realVal = atof(digitos);
     return t;
 }
-
 
 TOKEN AnaLex(FILE *fd)
 {
@@ -149,7 +156,7 @@ TOKEN AnaLex(FILE *fd)
             else if (LEU_EXCLAMACAO)
             {
                 mudaEstadoEIncrementaLexema(&estado, 40, lexema, &tamL, c);
-                //estado = 40;
+                // estado = 40;
             }
 
             else if (leuQuebraDeLinha)
@@ -231,9 +238,12 @@ TOKEN AnaLex(FILE *fd)
             }
             break;
         case 40:
-            if (leuSinalDeIgual) {
+            if (leuSinalDeIgual)
+            {
                 return reconheceDiferente(&estado);
-            } else {
+            }
+            else
+            {
                 return reconheceNegacao(&estado, fd, c);
             }
         case 43:
