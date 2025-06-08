@@ -69,15 +69,7 @@ TOKEN AnaLex(FILE *fd)
                     mudaEstadoEIncrementaDigito(&estado, 3, digitos, &tamD, c);
                 } else if (leuSinalDeIgual) {
                     estado = 27;
-                } else if (leuQuebraDeLinha) {
-                    estado = 0;
-                    t.cat = FIM_EXPR; // fim de linha (ou expressao) encontrado
-                    contLinha++;
-                    return t;
-                } else if (leuFimDeLinha){
-                    t.cat = FIM_ARQ;
-                    return t;
-                } else if (LEU_E_COMERCIAL) {
+                }  else if (LEU_E_COMERCIAL) {
                     mudaEstadoEIncrementaLexema(&estado, 45, lexema, &tamL, c);
                 } else if (LEU_PIPE) {
                     mudaEstadoEIncrementaLexema(&estado, 43, lexema, &tamL, c);
@@ -86,7 +78,15 @@ TOKEN AnaLex(FILE *fd)
 
                 }
                 
-                else
+                else if (leuQuebraDeLinha) {
+                    estado = 0;
+                    t.cat = FIM_EXPR; // fim de linha (ou expressao) encontrado
+                    contLinha++;
+                    return t;
+                } else if (leuFimDeLinha){
+                    t.cat = FIM_ARQ;
+                    return t;
+                } else
                     error("Caracter invalido na expressao!");
 
                 break;
@@ -111,7 +111,6 @@ TOKEN AnaLex(FILE *fd)
 
                 } else if (leuPonto) { //DUVIDA: devo incrementar o dígito quando ler ponto?
                     mudaEstadoEIncrementaDigito(&estado, 5, digitos, &tamD, c);
-
                 } else {
                     estado = 4;
                     ungetc(c, fd);
