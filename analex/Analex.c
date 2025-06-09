@@ -88,9 +88,23 @@ TOKEN reconheceMenorQue(int *estado, FILE *fd, const char c)
 TOKEN reconheceMenorOuIgual(int *estado)
 {
     *estado = 25;
-    // ungetc(c, fd);
 
     return reconhecedorBase(SN, MENOR_OU_IGUAL);
+}
+
+TOKEN reconheceMaiorQue(int *estado, FILE *fd, const char c)
+{
+    *estado = 23;
+    ungetc(c, fd);
+
+    return reconhecedorBase(SN, MAIOR_QUE);
+}
+
+TOKEN reconheceMaiorOuIgual(int *estado)
+{
+    *estado = 22;
+
+    return reconhecedorBase(SN, MAIOR_OU_IGUAL);
 }
 
 TOKEN reconheceConstInt(int *estado, FILE *fd, const char *digitos, char c)
@@ -181,6 +195,9 @@ TOKEN AnaLex(FILE *fd)
             else if (LEU_MENOR_QUE) {
                 mudaEstadoEIncrementaLexema(&estado, 24, lexema, &tamL, c);
             }
+            else if (LEU_MAIOR_QUE){
+                mudaEstadoEIncrementaLexema(&estado, 21, lexema, &tamL, c);
+            }
 
             else if (leuQuebraDeLinha)
             {
@@ -249,6 +266,16 @@ TOKEN AnaLex(FILE *fd)
                 return reconheceConstReal(&estado, fd, digitos, c);
             }
             break;
+        
+        case 21:
+            if (leuSinalDeIgual) {
+                return reconheceMaiorOuIgual(&estado);
+            }
+            else {
+                return reconheceMaiorQue(&estado, fd, c);
+            }
+            break;
+
         case 24:
             if (leuSinalDeIgual) {
                 return reconheceMenorOuIgual(&estado);
@@ -256,6 +283,7 @@ TOKEN AnaLex(FILE *fd)
             else {
                 return reconheceMenorQue(&estado, fd, c);
             }
+            break;
 
         case 27:
             if (leuSinalDeIgual)
@@ -374,6 +402,12 @@ int main()
                 break;
             case MENOR_OU_IGUAL:
                 printf("<SN, MENOR_OU_IGUAL> ");
+                break;
+            case MAIOR_QUE:
+                printf("<SN, MAIOR_QUE> ");
+                break;
+            case MAIOR_OU_IGUAL:
+                printf("<SN, MAIOR_OU_IGUAL> ");
                 break;
             }
             break;

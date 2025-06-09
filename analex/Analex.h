@@ -9,7 +9,7 @@ enum TOKEN_CAT { ID=1, SN, CT_I, CT_REAL, FIM_EXPR, FIM_ARQ };
 enum SINAIS {   
                 ATRIB = 1, ADICAO, SUBTRACAO, MULTIPLIC, DIVISAO, ABRE_PAR, FECHA_PAR, 
                 COMPARACAO, PONTEIRO, OPERADOR_AND, OPERADOR_OR, OPERADOR_DIFERENTE, OPERADOR_NEGACAO,
-                MENOR_QUE, MENOR_OU_IGUAL
+                MENOR_QUE, MENOR_OU_IGUAL, MAIOR_QUE, MAIOR_OU_IGUAL
             }; // Sinais válidos da linguagem
 
 typedef
