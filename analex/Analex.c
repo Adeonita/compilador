@@ -119,6 +119,15 @@ TOKEN reconheceMaiorOuIgual(int *estado)
     return reconhecedorBase(SN, MAIOR_OU_IGUAL);
 }
 
+TOKEN reconheceAdicao(int *estado, char *lexema, int *tamL, char c)
+{
+    *estado = 39;
+    
+    mudaEstadoEIncrementaLexema(estado, 39, lexema, tamL, c);
+
+    return reconhecedorBase(SN, ADICAO);
+}
+
 TOKEN reconheceConstInt(int *estado, FILE *fd, const char *digitos, char c)
 {
     TOKEN t;
@@ -169,6 +178,14 @@ TOKEN AnaLex(FILE *fd)
         bool LEU_SUBTRACAO = c == '-';
         bool LEU_ASTERISCO = c == '*';
         bool LEU_BARRA = c == '/';
+        bool LEU_ABRE_PAR = c == '(';
+        bool LEU_FECHA_PAR = c == ')';
+        bool LEU_ABRE_COLCHETE = c == '[';
+        bool LEU_FECHA_COLCHETE = c == ']';
+        bool LEU_ABRE_CHAVE = c == '{';
+        bool LEU_FECHA_CHAVE = c == '}';
+        bool LEU_VIRGULA = c == ',';
+        bool LEU_PONTO_E_VIRGULA = c == ';';
 
         bool LEU_MAIOR_QUE = c == '>';
         bool LEU_MENOR_QUE = c == '<';
@@ -212,6 +229,9 @@ TOKEN AnaLex(FILE *fd)
             }
             else if (LEU_BARRA) {
                 mudaEstadoEIncrementaLexema(&estado, 17, lexema, &tamL, c);
+            }
+            else if (LEU_ADICAO) {
+                return reconheceAdicao(&estado, lexema, &tamL, c);
             }
 
             else if (leuQuebraDeLinha)
