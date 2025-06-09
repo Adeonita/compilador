@@ -191,6 +191,20 @@ TOKEN reconheceAbreChaves(int *estado, char *lexema, int *tamL, char c)
     return reconhecedorBase(SN, ABRE_CHAVES);
 }
 
+TOKEN reconheceVirgula(int *estado, char *lexema, int *tamL, char c)
+{    
+    mudaEstadoEIncrementaLexema(estado, 32, lexema, tamL, c);
+
+    return reconhecedorBase(SN, VIRGULA);
+}
+
+TOKEN reconhecePontoEVirgula(int *estado, char *lexema, int *tamL, char c)
+{    
+    mudaEstadoEIncrementaLexema(estado, 31, lexema, tamL, c);
+
+    return reconhecedorBase(SN, PONTO_E_VIRGULA);
+}
+
 TOKEN reconheceFechaChaves(int *estado, char *lexema, int *tamL, char c)
 {
     *estado = 50;
@@ -330,6 +344,12 @@ TOKEN AnaLex(FILE *fd)
             }
             else if (LEU_FECHA_CHAVE) {
                 return reconheceFechaChaves(&estado, lexema, &tamL, c);
+            }
+            else if (LEU_VIRGULA){
+                return reconheceVirgula(&estado, lexema, &tamL, c);
+            }
+            else if (LEU_PONTO_E_VIRGULA) {
+                return reconhecePontoEVirgula(&estado, lexema, &tamL, c);
             }
 
             else if (leuQuebraDeLinha)
