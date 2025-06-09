@@ -164,6 +164,42 @@ TOKEN reconheceFechaParenteses(int *estado, char *lexema, int *tamL, char c)
     return reconhecedorBase(SN, FECHA_PAR);
 }
 
+TOKEN reconheceAbreColchetes(int *estado, char *lexema, int *tamL, char c)
+{
+    *estado = 33;
+    
+    mudaEstadoEIncrementaLexema(estado, 33, lexema, tamL, c);
+
+    return reconhecedorBase(SN, ABRE_COLCHETE);
+}
+
+TOKEN reconheceFechaColchetes(int *estado, char *lexema, int *tamL, char c)
+{
+    *estado = 34;
+    
+    mudaEstadoEIncrementaLexema(estado, 34, lexema, tamL, c);
+
+    return reconhecedorBase(SN, FECHA_COLCHETE);
+}
+
+TOKEN reconheceAbreChaves(int *estado, char *lexema, int *tamL, char c)
+{
+    *estado = 49;
+    
+    mudaEstadoEIncrementaLexema(estado, 49, lexema, tamL, c);
+
+    return reconhecedorBase(SN, ABRE_CHAVES);
+}
+
+TOKEN reconheceFechaChaves(int *estado, char *lexema, int *tamL, char c)
+{
+    *estado = 50;
+    
+    mudaEstadoEIncrementaLexema(estado, 50, lexema, tamL, c);
+
+    return reconhecedorBase(SN, FECHA_CHAVES);
+}
+
 
 TOKEN reconheceConstInt(int *estado, FILE *fd, const char *digitos, char c)
 {
@@ -281,6 +317,19 @@ TOKEN AnaLex(FILE *fd)
             }
             else if (LEU_FECHA_PAR) {
                 return reconheceFechaParenteses(&estado, lexema, &tamL, c);
+            }
+            else if (LEU_ABRE_COLCHETE)
+            {
+                return reconheceAbreColchetes(&estado, lexema, &tamL, c);
+            }
+            else if (LEU_FECHA_COLCHETE) {
+                return reconheceFechaColchetes(&estado, lexema, &tamL, c);
+            }
+            else if (LEU_ABRE_CHAVE) {
+                return reconheceAbreChaves(&estado, lexema, &tamL, c);
+            }
+            else if (LEU_FECHA_CHAVE) {
+                return reconheceFechaChaves(&estado, lexema, &tamL, c);
             }
 
             else if (leuQuebraDeLinha)
@@ -478,6 +527,12 @@ int main()
                 break;
             case FECHA_COLCHETE:
                 printf("<SN, FECHA_COLCHETE> ");
+                break;
+            case ABRE_CHAVES:
+                printf("<SN, ABRE_CHAVES> ");
+                break;
+            case FECHA_CHAVES:
+                printf("<SN, FECHA_CHAVES> ");
                 break;
             case VIRGULA:
                 printf("<SN, VIRGULA> ");
