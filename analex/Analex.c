@@ -146,7 +146,7 @@ TOKEN reconheceMultiplicacao(int *estado, char *lexema, int *tamL, char c)
     return reconhecedorBase(SN, MULTIPLIC);
 }
 
-TOKEN reconheceAbreParentesis(int *estado, char *lexema, int *tamL, char c)
+TOKEN reconheceAbreParenteses(int *estado, char *lexema, int *tamL, char c)
 {
     *estado = 36;
     
@@ -155,7 +155,7 @@ TOKEN reconheceAbreParentesis(int *estado, char *lexema, int *tamL, char c)
     return reconhecedorBase(SN, ABRE_PAR);
 }
 
-TOKEN reconheceFechaParentesis(int *estado, char *lexema, int *tamL, char c)
+TOKEN reconheceFechaParenteses(int *estado, char *lexema, int *tamL, char c)
 {
     *estado = 35;
     
@@ -277,10 +277,10 @@ TOKEN AnaLex(FILE *fd)
                 return reconheceMultiplicacao(&estado, lexema, &tamL, c);
             }
             else if (LEU_ABRE_PAR) {
-                return reconheceAbreParentesis(&estado, lexema, &tamL, c);
+                return reconheceAbreParenteses(&estado, lexema, &tamL, c);
             }
             else if (LEU_FECHA_PAR) {
-                return reconheceFechaParentesis(&estado, lexema, &tamL, c);
+                return reconheceFechaParenteses(&estado, lexema, &tamL, c);
             }
 
             else if (leuQuebraDeLinha)
