@@ -128,6 +128,26 @@ TOKEN reconheceAdicao(int *estado, char *lexema, int *tamL, char c)
     return reconhecedorBase(SN, ADICAO);
 }
 
+TOKEN reconheceSubtracao(int *estado, char *lexema, int *tamL, char c)
+{
+    *estado = 38;
+    
+    mudaEstadoEIncrementaLexema(estado, 38, lexema, tamL, c);
+
+    return reconhecedorBase(SN, SUBTRACAO);
+}
+
+TOKEN reconheceMultiplicacao(int *estado, char *lexema, int *tamL, char c)
+{
+    *estado = 37;
+    
+    mudaEstadoEIncrementaLexema(estado, 37, lexema, tamL, c);
+
+    return reconhecedorBase(SN, MULTIPLIC);
+}
+
+
+
 TOKEN reconheceConstInt(int *estado, FILE *fd, const char *digitos, char c)
 {
     TOKEN t;
@@ -232,6 +252,12 @@ TOKEN AnaLex(FILE *fd)
             }
             else if (LEU_ADICAO) {
                 return reconheceAdicao(&estado, lexema, &tamL, c);
+            }
+            else if (LEU_SUBTRACAO) {
+                return reconheceSubtracao(&estado, lexema, &tamL, c);
+            }
+            else if (LEU_ASTERISCO) {
+                return reconheceMultiplicacao(&estado, lexema, &tamL, c);
             }
 
             else if (leuQuebraDeLinha)
