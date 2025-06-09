@@ -8,6 +8,9 @@
 
 #define TAM_LEXEMA 50
 #define TAM_NUM 20
+#define ESTADO_LEU_BARRA 17
+#define ESTADO_LEU_BARRA_ASTERISCO 20
+
 
 void error(char msg[])
 {
@@ -100,6 +103,15 @@ TOKEN reconheceMaiorQue(int *estado, FILE *fd, const char c)
     return reconhecedorBase(SN, MAIOR_QUE);
 }
 
+TOKEN reconheceDivisao(int *estado, FILE *fd, const char c)
+{
+    *estado = 18;
+    ungetc(c, fd);
+
+    return reconhecedorBase(SN, DIVISAO);
+}
+
+
 TOKEN reconheceMaiorOuIgual(int *estado)
 {
     *estado = 22;
@@ -155,7 +167,7 @@ TOKEN AnaLex(FILE *fd)
         bool LEU_EXCLAMACAO = c == '!';
         bool LEU_ADICAO = c == '+';
         bool LEU_SUBTRACAO = c == '-';
-        bool LEU_MULTIPLICACAO = c == '*';
+        bool LEU_ASTERISCO = c == '*';
         bool LEU_BARRA = c == '/';
 
         bool LEU_MAIOR_QUE = c == '>';
@@ -197,6 +209,9 @@ TOKEN AnaLex(FILE *fd)
             }
             else if (LEU_MAIOR_QUE){
                 mudaEstadoEIncrementaLexema(&estado, 21, lexema, &tamL, c);
+            }
+            else if (LEU_BARRA) {
+                mudaEstadoEIncrementaLexema(&estado, 17, lexema, &tamL, c);
             }
 
             else if (leuQuebraDeLinha)
@@ -266,7 +281,17 @@ TOKEN AnaLex(FILE *fd)
                 return reconheceConstReal(&estado, fd, digitos, c);
             }
             break;
-        
+        case 17:
+            if (LEU_ASTERISCO) {
+                mudaEstadoEIncrementaLexema(&estado, 20, lexema, &tamL, c);
+            }
+            return reconheceDivisao(&estado, fd, c);
+        // case 20: TODO: TRATAR COMENTARIO
+        //     if (leuLetra) {
+        //         mudaEstadoEIncrementaLexema(&estado, 20, lexema, &tamL, c);
+        //     }
+
+            
         case 21:
             if (leuSinalDeIgual) {
                 return reconheceMaiorOuIgual(&estado);
