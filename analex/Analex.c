@@ -11,7 +11,6 @@
 #define ESTADO_LEU_BARRA 17
 #define ESTADO_LEU_BARRA_ASTERISCO 20
 
-
 void error(char msg[])
 {
     printf("%s\n", msg);
@@ -59,7 +58,8 @@ TOKEN reconheceComparacao(int *estado)
     return reconhecedorBase(SN, COMPARACAO);
 }
 
-TOKEN reconheceAtribuicao(int *estado, FILE *fd, const char c) {
+TOKEN reconheceAtribuicao(int *estado, FILE *fd, const char c)
+{
     *estado = 29;
     ungetc(c, fd);
 
@@ -87,7 +87,6 @@ TOKEN reconheceMenorQue(int *estado, FILE *fd, const char c)
     return reconhecedorBase(SN, MENOR_QUE);
 }
 
-
 TOKEN reconheceMenorOuIgual(int *estado)
 {
     *estado = 25;
@@ -111,7 +110,6 @@ TOKEN reconheceDivisao(int *estado, FILE *fd, const char c)
     return reconhecedorBase(SN, DIVISAO);
 }
 
-
 TOKEN reconheceMaiorOuIgual(int *estado)
 {
     *estado = 22;
@@ -122,7 +120,7 @@ TOKEN reconheceMaiorOuIgual(int *estado)
 TOKEN reconheceAdicao(int *estado, char *lexema, int *tamL, char c)
 {
     *estado = 39;
-    
+
     mudaEstadoEIncrementaLexema(estado, 39, lexema, tamL, c);
 
     return reconhecedorBase(SN, ADICAO);
@@ -131,7 +129,7 @@ TOKEN reconheceAdicao(int *estado, char *lexema, int *tamL, char c)
 TOKEN reconheceSubtracao(int *estado, char *lexema, int *tamL, char c)
 {
     *estado = 38;
-    
+
     mudaEstadoEIncrementaLexema(estado, 38, lexema, tamL, c);
 
     return reconhecedorBase(SN, SUBTRACAO);
@@ -140,7 +138,7 @@ TOKEN reconheceSubtracao(int *estado, char *lexema, int *tamL, char c)
 TOKEN reconheceMultiplicacao(int *estado, char *lexema, int *tamL, char c)
 {
     *estado = 37;
-    
+
     mudaEstadoEIncrementaLexema(estado, 37, lexema, tamL, c);
 
     return reconhecedorBase(SN, MULTIPLIC);
@@ -149,7 +147,7 @@ TOKEN reconheceMultiplicacao(int *estado, char *lexema, int *tamL, char c)
 TOKEN reconheceAbreParenteses(int *estado, char *lexema, int *tamL, char c)
 {
     *estado = 36;
-    
+
     mudaEstadoEIncrementaLexema(estado, 36, lexema, tamL, c);
 
     return reconhecedorBase(SN, ABRE_PAR);
@@ -158,7 +156,7 @@ TOKEN reconheceAbreParenteses(int *estado, char *lexema, int *tamL, char c)
 TOKEN reconheceFechaParenteses(int *estado, char *lexema, int *tamL, char c)
 {
     *estado = 35;
-    
+
     mudaEstadoEIncrementaLexema(estado, 35, lexema, tamL, c);
 
     return reconhecedorBase(SN, FECHA_PAR);
@@ -167,7 +165,7 @@ TOKEN reconheceFechaParenteses(int *estado, char *lexema, int *tamL, char c)
 TOKEN reconheceAbreColchetes(int *estado, char *lexema, int *tamL, char c)
 {
     *estado = 33;
-    
+
     mudaEstadoEIncrementaLexema(estado, 33, lexema, tamL, c);
 
     return reconhecedorBase(SN, ABRE_COLCHETE);
@@ -176,7 +174,7 @@ TOKEN reconheceAbreColchetes(int *estado, char *lexema, int *tamL, char c)
 TOKEN reconheceFechaColchetes(int *estado, char *lexema, int *tamL, char c)
 {
     *estado = 34;
-    
+
     mudaEstadoEIncrementaLexema(estado, 34, lexema, tamL, c);
 
     return reconhecedorBase(SN, FECHA_COLCHETE);
@@ -185,21 +183,21 @@ TOKEN reconheceFechaColchetes(int *estado, char *lexema, int *tamL, char c)
 TOKEN reconheceAbreChaves(int *estado, char *lexema, int *tamL, char c)
 {
     *estado = 49;
-    
+
     mudaEstadoEIncrementaLexema(estado, 49, lexema, tamL, c);
 
     return reconhecedorBase(SN, ABRE_CHAVES);
 }
 
 TOKEN reconheceVirgula(int *estado, char *lexema, int *tamL, char c)
-{    
+{
     mudaEstadoEIncrementaLexema(estado, 32, lexema, tamL, c);
 
     return reconhecedorBase(SN, VIRGULA);
 }
 
 TOKEN reconhecePontoEVirgula(int *estado, char *lexema, int *tamL, char c)
-{    
+{
     mudaEstadoEIncrementaLexema(estado, 31, lexema, tamL, c);
 
     return reconhecedorBase(SN, PONTO_E_VIRGULA);
@@ -208,12 +206,11 @@ TOKEN reconhecePontoEVirgula(int *estado, char *lexema, int *tamL, char c)
 TOKEN reconheceFechaChaves(int *estado, char *lexema, int *tamL, char c)
 {
     *estado = 50;
-    
+
     mudaEstadoEIncrementaLexema(estado, 50, lexema, tamL, c);
 
     return reconhecedorBase(SN, FECHA_CHAVES);
 }
-
 
 TOKEN reconheceConstInt(int *estado, FILE *fd, const char *digitos, char c)
 {
@@ -229,7 +226,7 @@ TOKEN reconheceConstReal(int *estado, FILE *fd, const char *digitos, char c)
 {
     TOKEN t;
     *estado = 48;
-    ungetc(c, fd); //precisa do atof e do ungetc ?
+    ungetc(c, fd); // precisa do atof e do ungetc ?
     t.cat = CT_REAL;
     t.realVal = atof(digitos);
     return t;
@@ -308,47 +305,60 @@ TOKEN AnaLex(FILE *fd)
             {
                 mudaEstadoEIncrementaLexema(&estado, 40, lexema, &tamL, c);
             }
-            else if (LEU_MENOR_QUE) {
+            else if (LEU_MENOR_QUE)
+            {
                 mudaEstadoEIncrementaLexema(&estado, 24, lexema, &tamL, c);
             }
-            else if (LEU_MAIOR_QUE){
+            else if (LEU_MAIOR_QUE)
+            {
                 mudaEstadoEIncrementaLexema(&estado, 21, lexema, &tamL, c);
             }
-            else if (LEU_BARRA) {
+            else if (LEU_BARRA)
+            {
                 mudaEstadoEIncrementaLexema(&estado, 17, lexema, &tamL, c);
             }
-            else if (LEU_ADICAO) {
+            else if (LEU_ADICAO)
+            {
                 return reconheceAdicao(&estado, lexema, &tamL, c);
             }
-            else if (LEU_SUBTRACAO) {
+            else if (LEU_SUBTRACAO)
+            {
                 return reconheceSubtracao(&estado, lexema, &tamL, c);
             }
-            else if (LEU_ASTERISCO) {
+            else if (LEU_ASTERISCO)
+            {
                 return reconheceMultiplicacao(&estado, lexema, &tamL, c);
             }
-            else if (LEU_ABRE_PAR) {
+            else if (LEU_ABRE_PAR)
+            {
                 return reconheceAbreParenteses(&estado, lexema, &tamL, c);
             }
-            else if (LEU_FECHA_PAR) {
+            else if (LEU_FECHA_PAR)
+            {
                 return reconheceFechaParenteses(&estado, lexema, &tamL, c);
             }
             else if (LEU_ABRE_COLCHETE)
             {
                 return reconheceAbreColchetes(&estado, lexema, &tamL, c);
             }
-            else if (LEU_FECHA_COLCHETE) {
+            else if (LEU_FECHA_COLCHETE)
+            {
                 return reconheceFechaColchetes(&estado, lexema, &tamL, c);
             }
-            else if (LEU_ABRE_CHAVE) {
+            else if (LEU_ABRE_CHAVE)
+            {
                 return reconheceAbreChaves(&estado, lexema, &tamL, c);
             }
-            else if (LEU_FECHA_CHAVE) {
+            else if (LEU_FECHA_CHAVE)
+            {
                 return reconheceFechaChaves(&estado, lexema, &tamL, c);
             }
-            else if (LEU_VIRGULA){
+            else if (LEU_VIRGULA)
+            {
                 return reconheceVirgula(&estado, lexema, &tamL, c);
             }
-            else if (LEU_PONTO_E_VIRGULA) {
+            else if (LEU_PONTO_E_VIRGULA)
+            {
                 return reconhecePontoEVirgula(&estado, lexema, &tamL, c);
             }
 
@@ -420,30 +430,34 @@ TOKEN AnaLex(FILE *fd)
             }
             break;
         case 17:
-            if (LEU_ASTERISCO) {
+            if (LEU_ASTERISCO)
+            {
                 mudaEstadoEIncrementaLexema(&estado, 20, lexema, &tamL, c);
             }
             return reconheceDivisao(&estado, fd, c);
-        // case 20: TODO: TRATAR COMENTARIO
-        //     if (leuLetra) {
-        //         mudaEstadoEIncrementaLexema(&estado, 20, lexema, &tamL, c);
-        //     }
+            // case 20: TODO: TRATAR COMENTARIO
+            //     if (leuLetra) {
+            //         mudaEstadoEIncrementaLexema(&estado, 20, lexema, &tamL, c);
+            //     }
 
-            
         case 21:
-            if (leuSinalDeIgual) {
+            if (leuSinalDeIgual)
+            {
                 return reconheceMaiorOuIgual(&estado);
             }
-            else {
+            else
+            {
                 return reconheceMaiorQue(&estado, fd, c);
             }
             break;
 
         case 24:
-            if (leuSinalDeIgual) {
+            if (leuSinalDeIgual)
+            {
                 return reconheceMenorOuIgual(&estado);
             }
-            else {
+            else
+            {
                 return reconheceMenorQue(&estado, fd, c);
             }
             break;
@@ -559,9 +573,7 @@ int main()
                 break;
             case PONTO_E_VIRGULA:
                 printf("<SN, PONTO_E_VIRGULA> ");
-                break;            
-
-
+                break;
             case COMPARACAO:
                 printf("<SN, COMPARACAO> ");
                 break;
