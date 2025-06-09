@@ -146,6 +146,23 @@ TOKEN reconheceMultiplicacao(int *estado, char *lexema, int *tamL, char c)
     return reconhecedorBase(SN, MULTIPLIC);
 }
 
+TOKEN reconheceAbreParentesis(int *estado, char *lexema, int *tamL, char c)
+{
+    *estado = 36;
+    
+    mudaEstadoEIncrementaLexema(estado, 36, lexema, tamL, c);
+
+    return reconhecedorBase(SN, ABRE_PAR);
+}
+
+TOKEN reconheceFechaParentesis(int *estado, char *lexema, int *tamL, char c)
+{
+    *estado = 35;
+    
+    mudaEstadoEIncrementaLexema(estado, 35, lexema, tamL, c);
+
+    return reconhecedorBase(SN, FECHA_PAR);
+}
 
 
 TOKEN reconheceConstInt(int *estado, FILE *fd, const char *digitos, char c)
@@ -258,6 +275,12 @@ TOKEN AnaLex(FILE *fd)
             }
             else if (LEU_ASTERISCO) {
                 return reconheceMultiplicacao(&estado, lexema, &tamL, c);
+            }
+            else if (LEU_ABRE_PAR) {
+                return reconheceAbreParentesis(&estado, lexema, &tamL, c);
+            }
+            else if (LEU_FECHA_PAR) {
+                return reconheceFechaParentesis(&estado, lexema, &tamL, c);
             }
 
             else if (leuQuebraDeLinha)
@@ -450,6 +473,20 @@ int main()
             case FECHA_PAR:
                 printf("<SN, FECHA_PARENTESES> ");
                 break;
+            case ABRE_COLCHETE:
+                printf("<SN, ABRE_COLCHETE> ");
+                break;
+            case FECHA_COLCHETE:
+                printf("<SN, FECHA_COLCHETE> ");
+                break;
+            case VIRGULA:
+                printf("<SN, VIRGULA> ");
+                break;
+            case PONTO_E_VIRGULA:
+                printf("<SN, PONTO_E_VIRGULA> ");
+                break;            
+
+
             case COMPARACAO:
                 printf("<SN, COMPARACAO> ");
                 break;
