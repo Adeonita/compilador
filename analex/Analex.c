@@ -119,7 +119,7 @@ TOKEN reconheceMaiorOuIgual(int *estado)
 
 TOKEN reconheceAdicao(int *estado, char *lexema, int *tamL, char c)
 {
-    *estado = 39;
+    // *estado = 39;
 
     mudaEstadoEIncrementaLexema(estado, 39, lexema, tamL, c);
 
@@ -128,8 +128,6 @@ TOKEN reconheceAdicao(int *estado, char *lexema, int *tamL, char c)
 
 TOKEN reconheceSubtracao(int *estado, char *lexema, int *tamL, char c)
 {
-    *estado = 38;
-
     mudaEstadoEIncrementaLexema(estado, 38, lexema, tamL, c);
 
     return reconhecedorBase(SN, SUBTRACAO);
@@ -137,8 +135,6 @@ TOKEN reconheceSubtracao(int *estado, char *lexema, int *tamL, char c)
 
 TOKEN reconheceMultiplicacao(int *estado, char *lexema, int *tamL, char c)
 {
-    *estado = 37;
-
     mudaEstadoEIncrementaLexema(estado, 37, lexema, tamL, c);
 
     return reconhecedorBase(SN, MULTIPLIC);
@@ -146,8 +142,6 @@ TOKEN reconheceMultiplicacao(int *estado, char *lexema, int *tamL, char c)
 
 TOKEN reconheceAbreParenteses(int *estado, char *lexema, int *tamL, char c)
 {
-    *estado = 36;
-
     mudaEstadoEIncrementaLexema(estado, 36, lexema, tamL, c);
 
     return reconhecedorBase(SN, ABRE_PAR);
@@ -155,8 +149,6 @@ TOKEN reconheceAbreParenteses(int *estado, char *lexema, int *tamL, char c)
 
 TOKEN reconheceFechaParenteses(int *estado, char *lexema, int *tamL, char c)
 {
-    *estado = 35;
-
     mudaEstadoEIncrementaLexema(estado, 35, lexema, tamL, c);
 
     return reconhecedorBase(SN, FECHA_PAR);
@@ -164,8 +156,6 @@ TOKEN reconheceFechaParenteses(int *estado, char *lexema, int *tamL, char c)
 
 TOKEN reconheceAbreColchetes(int *estado, char *lexema, int *tamL, char c)
 {
-    *estado = 33;
-
     mudaEstadoEIncrementaLexema(estado, 33, lexema, tamL, c);
 
     return reconhecedorBase(SN, ABRE_COLCHETE);
@@ -173,8 +163,6 @@ TOKEN reconheceAbreColchetes(int *estado, char *lexema, int *tamL, char c)
 
 TOKEN reconheceFechaColchetes(int *estado, char *lexema, int *tamL, char c)
 {
-    *estado = 34;
-
     mudaEstadoEIncrementaLexema(estado, 34, lexema, tamL, c);
 
     return reconhecedorBase(SN, FECHA_COLCHETE);
@@ -182,8 +170,6 @@ TOKEN reconheceFechaColchetes(int *estado, char *lexema, int *tamL, char c)
 
 TOKEN reconheceAbreChaves(int *estado, char *lexema, int *tamL, char c)
 {
-    *estado = 49;
-
     mudaEstadoEIncrementaLexema(estado, 49, lexema, tamL, c);
 
     return reconhecedorBase(SN, ABRE_CHAVES);
@@ -205,8 +191,6 @@ TOKEN reconhecePontoEVirgula(int *estado, char *lexema, int *tamL, char c)
 
 TOKEN reconheceFechaChaves(int *estado, char *lexema, int *tamL, char c)
 {
-    *estado = 50;
-
     mudaEstadoEIncrementaLexema(estado, 50, lexema, tamL, c);
 
     return reconhecedorBase(SN, FECHA_CHAVES);
