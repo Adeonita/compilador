@@ -216,6 +216,16 @@ TOKEN reconheceConstReal(int *estado, FILE *fd, const char *digitos, char c)
     return t;
 }
 
+TOKEN reconheceCaractere(int *estado, FILE *fd, char *lexema, int *tamL, char c)
+{
+    TOKEN t;
+    ungetc(c, fd); // devolve o próximo caractere da leitura
+    t.cat = CARACTERE;   // categoria constante caractere
+    strcpy(t.lexema, lexema);
+    return t;
+}
+
+
 TOKEN AnaLex(FILE *fd)
 {
     int estado;
@@ -254,6 +264,8 @@ TOKEN AnaLex(FILE *fd)
         bool LEU_FECHA_CHAVE = c == '}';
         bool LEU_VIRGULA = c == ',';
         bool LEU_PONTO_E_VIRGULA = c == ';';
+        bool LEU_ASPAS_SIMPLES = c == '\'';
+        bool LEU_CARACTERE = c != '\'';
 
         bool LEU_MAIOR_QUE = c == '>';
         bool LEU_MENOR_QUE = c == '<';
@@ -345,6 +357,10 @@ TOKEN AnaLex(FILE *fd)
             {
                 return reconhecePontoEVirgula(&estado, lexema, &tamL, c);
             }
+            else if (LEU_ASPAS_SIMPLES) {
+                // printf("\nLi aspas \n");
+                mudaEstadoEIncrementaLexema(&estado, 7, lexema, &tamL, c);
+            }
 
             else if (leuQuebraDeLinha)
             {
@@ -412,6 +428,29 @@ TOKEN AnaLex(FILE *fd)
             {
                 return reconheceConstReal(&estado, fd, digitos, c);
             }
+            break;
+        case 7:
+            if (LEU_CARACTERE){
+                // printf("Li caractere \n");
+                // printf("lexema %s", lexema);
+
+                mudaEstadoEIncrementaLexema(&estado, 8, lexema, &tamL, c);
+            }
+            else {
+                error("Caractere invalido no ESTADO 7!");
+            }
+            break;
+        case 8 :
+            if (LEU_ASPAS_SIMPLES){
+                mudaEstadoEIncrementaLexema(&estado, 9, lexema, &tamL, c);
+            } 
+            else
+            {
+                error("Caractere inválido no Estado 8");
+            }
+            break;
+        case 9: 
+            return reconheceCaractere(&estado, fd, lexema, &tamL, c);
             break;
         case 17:
             if (LEU_ASTERISCO)
@@ -597,6 +636,10 @@ int main()
 
         case CT_REAL:
             printf("<CT_REAL, %f> ", tk.realVal);
+            break;
+        
+        case CARACTERE:
+            printf("<CARACTERE, %s> ", tk.lexema);
             break;
 
         case FIM_EXPR:
