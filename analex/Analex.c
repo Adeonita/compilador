@@ -225,6 +225,15 @@ TOKEN reconheceCaractere(int *estado, FILE *fd, char *lexema, int *tamL, char c)
     return t;
 }
 
+TOKEN reconheceString(int *estado, FILE *fd, char *lexema, int *tamL, char c)
+{
+    TOKEN t;
+    ungetc(c, fd);
+    t.cat = STRINGCON;
+    strcpy(t.lexema, lexema);
+    return t;
+}
+
 
 TOKEN AnaLex(FILE *fd)
 {
@@ -265,6 +274,7 @@ TOKEN AnaLex(FILE *fd)
         bool LEU_VIRGULA = c == ',';
         bool LEU_PONTO_E_VIRGULA = c == ';';
         bool LEU_ASPAS_SIMPLES = c == '\'';
+        bool LEU_ASPAS_DUPLAS = c == '"';
         bool LEU_CARACTERE = c != '\'';
 
         bool LEU_MAIOR_QUE = c == '>';
@@ -358,8 +368,10 @@ TOKEN AnaLex(FILE *fd)
                 return reconhecePontoEVirgula(&estado, lexema, &tamL, c);
             }
             else if (LEU_ASPAS_SIMPLES) {
-                // printf("\nLi aspas \n");
                 mudaEstadoEIncrementaLexema(&estado, 7, lexema, &tamL, c);
+            }
+            else if (LEU_ASPAS_DUPLAS){
+                mudaEstadoEIncrementaLexema(&estado, 15, lexema, &tamL, c);
             }
 
             else if (leuQuebraDeLinha)
@@ -431,9 +443,6 @@ TOKEN AnaLex(FILE *fd)
             break;
         case 7:
             if (LEU_CARACTERE){
-                // printf("Li caractere \n");
-                // printf("lexema %s", lexema);
-
                 mudaEstadoEIncrementaLexema(&estado, 8, lexema, &tamL, c);
             }
             else {
@@ -451,6 +460,20 @@ TOKEN AnaLex(FILE *fd)
             break;
         case 9: 
             return reconheceCaractere(&estado, fd, lexema, &tamL, c);
+            break;
+        case 15:
+            if (LEU_CARACTERE && !LEU_ASPAS_DUPLAS) {
+                mudaEstadoEIncrementaLexema(&estado, 15, lexema, &tamL, c);
+            }
+            else if (LEU_ASPAS_DUPLAS){
+                mudaEstadoEIncrementaLexema(&estado, 16, lexema, &tamL, c);
+            }
+            else {
+                error("Caractere inválido no Estado 15");
+            }
+            break;
+        case 16:
+            return reconheceString(&estado, fd, lexema, &tamL, c);
             break;
         case 17:
             if (LEU_ASTERISCO)
@@ -640,6 +663,10 @@ int main()
         
         case CARACTERE:
             printf("<CARACTERE, %s> ", tk.lexema);
+            break;
+        
+        case STRINGCON:
+            printf("<STRINGCON, %s> ", tk.lexema);
             break;
 
         case FIM_EXPR:
