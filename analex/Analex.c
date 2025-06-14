@@ -104,8 +104,7 @@ TOKEN reconheceMaiorQue(int *estado, FILE *fd, const char c)
 
 TOKEN reconheceDivisao(int *estado, FILE *fd, const char c)
 {
-    // *estado = 18;
-    // ungetc(c, fd);
+    ungetc(c, fd);
 
     return reconhecedorBase(SN, DIVISAO);
 }
