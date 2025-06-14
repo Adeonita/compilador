@@ -104,8 +104,8 @@ TOKEN reconheceMaiorQue(int *estado, FILE *fd, const char c)
 
 TOKEN reconheceDivisao(int *estado, FILE *fd, const char c)
 {
-    *estado = 18;
-    ungetc(c, fd);
+    // *estado = 18;
+    // ungetc(c, fd);
 
     return reconhecedorBase(SN, DIVISAO);
 }
@@ -535,11 +535,37 @@ TOKEN AnaLex(FILE *fd)
             {
                 mudaEstadoEIncrementaLexema(&estado, 20, lexema, &tamL, c);
             }
-            return reconheceDivisao(&estado, fd, c);
-            // case 20: TODO: TRATAR COMENTARIO
-            //     if (leuLetra) {
-            //         mudaEstadoEIncrementaLexema(&estado, 20, lexema, &tamL, c);
-            //     }
+            else {
+                mudaEstadoEIncrementaLexema(&estado, 18, lexema, &tamL, c);
+
+                return reconheceDivisao(&estado, fd, c);
+            }
+            break;
+        case 19:
+            if (LEU_BARRA) {
+                estado = 0;
+            }
+            else if (LEU_ASTERISCO) {
+                mudaEstadoEIncrementaLexema(&estado, 19, lexema, &tamL, c);
+            }
+            else if (leuFimDeLinha){
+                error("Comentário de bloco não fechado.");
+            } 
+            else {
+                mudaEstadoEIncrementaLexema(&estado, 20, lexema, &tamL, c);
+            }
+            break;
+        case 20:
+            if (LEU_ASTERISCO) {
+                mudaEstadoEIncrementaLexema(&estado, 19, lexema, &tamL, c);
+            }
+            else if (leuFimDeLinha){
+                error("Comentário de bloco não fechado.");
+            }
+            else {
+                mudaEstadoEIncrementaLexema(&estado, 20, lexema, &tamL, c);
+            }
+            break;
 
         case 21:
             if (leuSinalDeIgual)
