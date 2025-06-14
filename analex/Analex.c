@@ -234,6 +234,16 @@ TOKEN reconheceString(int *estado, FILE *fd, char *lexema, int *tamL, char c)
     return t;
 }
 
+TOKEN reconheceQuebraDeLinha(int *estado, FILE *fd, char *lexema, int *tamL, char c)
+{
+    TOKEN t;
+    ungetc(c, fd);
+    t.cat = QUEBRA_DE_LINHA;
+    strcpy(t.lexema, lexema);
+    return t;
+}
+
+
 
 TOKEN AnaLex(FILE *fd)
 {
@@ -265,6 +275,7 @@ TOKEN AnaLex(FILE *fd)
         bool LEU_SUBTRACAO = c == '-';
         bool LEU_ASTERISCO = c == '*';
         bool LEU_BARRA = c == '/';
+        bool LEU_CONTRA_BARRA = '\\';
         bool LEU_ABRE_PAR = c == '(';
         bool LEU_FECHA_PAR = c == ')';
         bool LEU_ABRE_COLCHETE = c == '[';
@@ -275,7 +286,8 @@ TOKEN AnaLex(FILE *fd)
         bool LEU_PONTO_E_VIRGULA = c == ';';
         bool LEU_ASPAS_SIMPLES = c == '\'';
         bool LEU_ASPAS_DUPLAS = c == '"';
-        bool LEU_CARACTERE = c != '\'';
+        bool LEU_CARACTERE = c != '\'' && c != '\\';
+        bool LEU_QUEBRA_DE_LINHA = c =='n';
 
         bool LEU_MAIOR_QUE = c == '>';
         bool LEU_MENOR_QUE = c == '<';
@@ -370,7 +382,7 @@ TOKEN AnaLex(FILE *fd)
             else if (LEU_ASPAS_SIMPLES) {
                 mudaEstadoEIncrementaLexema(&estado, 7, lexema, &tamL, c);
             }
-            else if (LEU_ASPAS_DUPLAS){
+            else if (LEU_ASPAS_DUPLAS) {
                 mudaEstadoEIncrementaLexema(&estado, 15, lexema, &tamL, c);
             }
 
@@ -442,8 +454,13 @@ TOKEN AnaLex(FILE *fd)
             }
             break;
         case 7:
-            if (LEU_CARACTERE){
+            if (LEU_CARACTERE)
+            {
                 mudaEstadoEIncrementaLexema(&estado, 8, lexema, &tamL, c);
+            }
+            else if (LEU_CONTRA_BARRA)
+            {
+                mudaEstadoEIncrementaLexema(&estado, 10, lexema, &tamL, c);
             }
             else {
                 error("Caractere invalido no ESTADO 7!");
@@ -460,6 +477,22 @@ TOKEN AnaLex(FILE *fd)
             break;
         case 9: 
             return reconheceCaractere(&estado, fd, lexema, &tamL, c);
+            break;
+        case 10:
+            if (LEU_QUEBRA_DE_LINHA){
+                mudaEstadoEIncrementaLexema(&estado, 11, lexema, &tamL, c);
+            }
+            else {
+                error("Caractere inválido no Estado 10");
+            }
+            break;
+        case 11:
+            if (LEU_ASPAS_SIMPLES){
+                mudaEstadoEIncrementaLexema(&estado, 12, lexema, &tamL, c);
+            }
+            break;
+        case 12:
+            return reconheceQuebraDeLinha(&estado, fd, lexema, &tamL, c);
             break;
         case 15:
             if (LEU_CARACTERE && !LEU_ASPAS_DUPLAS) {
@@ -668,7 +701,9 @@ int main()
         case STRINGCON:
             printf("<STRINGCON, %s> ", tk.lexema);
             break;
-
+        case QUEBRA_DE_LINHA:
+            printf("<QUEBRA_DE_LINHA, %s> ", tk.lexema);
+            break;
         case FIM_EXPR:
             printf("<FIM_EXPR, %d>\n", 0);
             printf("LINHA %d: ", contLinha);
