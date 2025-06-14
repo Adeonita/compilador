@@ -28,6 +28,14 @@ void mudaEstadoEIncrementaDigito(int *estado, int novoEstado, char *digitos, int
     digitos[++(*tamD)] = '\0';
 }
 
+int verificaPalavraReservada(const char *lexema) {
+    for (int i = 0; i < QTD_PR; i++) {
+        if (strcmp(lexema, palavras[i].palavra) == 0)
+            return palavras[i].codigo;
+    }
+    return -1;
+}
+
 TOKEN reconhecedorBase(char categoria, char codigo)
 {
     TOKEN t;
@@ -252,14 +260,21 @@ TOKEN reconheceFimExpr(int *estado, FILE *fd, char *lexema, int *tamL, char c)
 TOKEN reconheceId(int *estado, FILE *fd, char *lexema, int *tamL, char c) {
     TOKEN t;
     ungetc(c, fd);
-    t.cat = ID;
-    strcpy(t.lexema, lexema);
     
-    mudaEstadoEIncrementaLexema(estado, 2, lexema, tamL, c);
-    
+    int codigoPR = verificaPalavraReservada(lexema);
+    if (codigoPR != -1) {
+        t.cat = PR;
+        t.codigo = codigoPR;
+    } else {
+        t.cat = ID;
+        strcpy(t.lexema, lexema);
+
+        mudaEstadoEIncrementaLexema(estado, 2, lexema, tamL, c);
+       // insereNaTabela(lexema); // insere na tabela de símbolos
+    }
+
     return t;
 }
-
 
 TOKEN AnaLex(FILE *fd)
 {
@@ -658,6 +673,21 @@ int main()
             printf("<ID, %s> ", tk.lexema);
             break;
 
+        case PR:
+            switch (tk.codigo) {
+                case PR_IF: printf("<PR, IF> "); break;
+                case PR_ELSE: printf("<PR, ELSE> "); break;
+                case PR_WHILE: printf("<PR, WHILE> "); break;
+                case PR_FOR: printf("<PR, FOR> "); break;
+                case PR_RETURN: printf("<PR, RETURN> "); break;
+                case PR_INT: printf("<PR, INT> "); break;
+                case PR_FLOAT: printf("<PR, FLOAT> "); break;
+                case PR_CHAR: printf("<PR, CHAR> "); break;
+                case PR_VOID: printf("<PR, VOID> "); break;
+
+            }
+            break;
+        
         case SN:
             switch (tk.codigo)
             {

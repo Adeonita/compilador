@@ -2,7 +2,18 @@
 #define ANALEX 
 #define TAM_MAX_LEXEMA 31 
 
-enum TOKEN_CAT { ID=1, SN, CT_I, CT_REAL, CARACTERE, STRINGCON, FIM_EXPR, FIM_ARQ, QUEBRA_DE_LINHA }; 
+#define PR_IF 1
+#define PR_ELSE 2
+#define PR_WHILE 3
+#define PR_FOR 4
+#define PR_RETURN 5
+#define PR_INT 6
+#define PR_FLOAT 7
+#define PR_CHAR 8
+#define PR_VOID 9
+
+
+enum TOKEN_CAT { ID=1, PR, SN, CT_I, CT_REAL, CARACTERE, STRINGCON, FIM_EXPR, FIM_ARQ, QUEBRA_DE_LINHA }; 
 
 /* Onde: ID: Identificador, SN: Sinal; CT_I: Constante numérica inteira */ 
  
@@ -29,3 +40,22 @@ typedef
 /* Contador de linhas do código fonte */ 
 
 int contLinha = 1; 
+
+typedef struct {
+    char *palavra;
+    int codigo;
+} PalavraReservada;
+
+PalavraReservada palavras[] = {
+    {"if", PR_IF},
+    {"else", PR_ELSE},
+    {"while", PR_WHILE},
+    {"for", PR_FOR},
+    {"return", PR_RETURN},
+    {"int", PR_INT},
+    {"float", PR_FLOAT},
+    {"char", PR_CHAR},
+    {"void", PR_VOID},
+};
+
+#define QTD_PR (sizeof(palavras) / sizeof(PalavraReservada))
