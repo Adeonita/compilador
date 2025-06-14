@@ -249,6 +249,17 @@ TOKEN reconheceFimExpr(int *estado, FILE *fd, char *lexema, int *tamL, char c)
     return t;
 }
 
+TOKEN reconheceId(int *estado, FILE *fd, char *lexema, int *tamL, char c) {
+    TOKEN t;
+    ungetc(c, fd);
+    t.cat = ID;
+    strcpy(t.lexema, lexema);
+    
+    mudaEstadoEIncrementaLexema(estado, 2, lexema, tamL, c);
+    
+    return t;
+}
+
 
 TOKEN AnaLex(FILE *fd)
 {
@@ -415,12 +426,7 @@ TOKEN AnaLex(FILE *fd)
             }
             else
             {
-                // transicao OUTRO* do estado 1 do AFD
-                estado = 2;
-                ungetc(c, fd);
-                t.cat = ID;
-                strcpy(t.lexema, lexema);
-                return t;
+                return reconheceId(&estado, fd, lexema, &tamL, c);
             }
 
             break;
