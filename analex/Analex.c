@@ -214,8 +214,9 @@ TOKEN reconheceConstReal(int *estado, FILE *fd, const char *digitos, char c)
 
 TOKEN reconheceCaractere(int *estado, FILE *fd, char *lexema, int *tamL, char c)
 {
+    mudaEstadoEIncrementaLexema(estado, 9, lexema, tamL, c);    
+
     TOKEN t;
-    ungetc(c, fd); // devolve o próximo caractere da leitura
     t.cat = CARACTERE;   // categoria constante caractere
     strcpy(t.lexema, lexema);
     return t;
@@ -473,15 +474,12 @@ TOKEN AnaLex(FILE *fd)
             break;
         case 8 :
             if (LEU_ASPAS_SIMPLES){
-                mudaEstadoEIncrementaLexema(&estado, 9, lexema, &tamL, c);
+                return reconheceCaractere(&estado, fd, lexema, &tamL, c);
             } 
             else
             {
                 error("Caractere inválido no Estado 8");
             }
-            break;
-        case 9: 
-            return reconheceCaractere(&estado, fd, lexema, &tamL, c);
             break;
         case 10:
             if (LEU_LETRA_N){
