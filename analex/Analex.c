@@ -239,7 +239,7 @@ TOKEN reconheceQuebraDeLinha(int *estado, FILE *fd, char *lexema, int *tamL, cha
     return t;
 }
 
-TOKEN reonheceFimExpr(int *estado, FILE *fd, char *lexema, int *tamL, char c)
+TOKEN reconheceFimExpr(int *estado, FILE *fd, char *lexema, int *tamL, char c)
 {
     TOKEN t;
     ungetc(c, fd);
@@ -291,7 +291,7 @@ TOKEN AnaLex(FILE *fd)
         bool LEU_ASPAS_SIMPLES = c == '\'';
         bool LEU_ASPAS_DUPLAS = c == '"';
         bool LEU_CARACTERE = c != '\'' && c != '\\';
-        bool LEU_QUEBRA_DE_LINHA = c =='n';
+        bool LEU_LETRA_N = c =='n';
         bool LEU_BARRA_ZERO = c == '0';
 
         bool LEU_MAIOR_QUE = c == '>';
@@ -484,7 +484,7 @@ TOKEN AnaLex(FILE *fd)
             return reconheceCaractere(&estado, fd, lexema, &tamL, c);
             break;
         case 10:
-            if (LEU_QUEBRA_DE_LINHA){
+            if (LEU_LETRA_N){
                 mudaEstadoEIncrementaLexema(&estado, 11, lexema, &tamL, c);
             }
             else if (LEU_BARRA_ZERO) {
@@ -511,7 +511,7 @@ TOKEN AnaLex(FILE *fd)
             }
             break;
         case 14:
-            return reonheceFimExpr(&estado, fd, lexema, &tamL, c);
+            return reconheceFimExpr(&estado, fd, lexema, &tamL, c);
         case 15:
             if (LEU_CARACTERE && !LEU_ASPAS_DUPLAS) {
                 mudaEstadoEIncrementaLexema(&estado, 15, lexema, &tamL, c);
