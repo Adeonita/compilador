@@ -4,12 +4,9 @@
 #include <string.h>
 #include <stdbool.h>
 #include "Analex.h"
-// #include "reconhecedores.h"
 
 #define TAM_LEXEMA 50
 #define TAM_NUM 20
-#define ESTADO_LEU_BARRA 17
-#define ESTADO_LEU_BARRA_ASTERISCO 20
 
 void error(char msg[])
 {
@@ -268,13 +265,13 @@ TOKEN AnaLex(FILE *fd)
     while (true)
     {
         char c = fgetc(fd);
-        bool leuLetra = (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
-        bool leuDigito = c >= '0' && c <= '9';
-        bool leuSinalDeIgual = c == '=';
-        bool leuFimDeLinha = c == EOF;
-        bool leuLetraOuDigitoOuUnderscore = (leuLetra) || (leuDigito) || (c == '_');
-        bool leuQuebraDeLinha = c == '\n';
-        bool leuPonto = c == '.';
+        bool LEU_LETRA = (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+        bool LEU_DIGITO = c >= '0' && c <= '9';
+        bool LEU_SINAL_DE_IGUAL = c == '=';
+        bool LEU_FIM_DE_LINHA = c == EOF;
+        bool LEU_LETRA_OU_DIGITO_OU_UNDERSCORE = (LEU_LETRA) || (LEU_DIGITO) || (c == '_');
+        bool LEU_QUEBRA_DE_LINHA = c == '\n';
+        bool LEU_PONTO = c == '.';
         bool LEU_E_COMERCIAL = c == '&';
         bool LEU_PIPE = c == '|';
         bool LEU_EXCLAMACAO = c == '!';
@@ -307,15 +304,15 @@ TOKEN AnaLex(FILE *fd)
             {
                 estado = 0;
             }
-            else if (leuLetra)
+            else if (LEU_LETRA)
             {
                 mudaEstadoEIncrementaLexema(&estado, 1, lexema, &tamL, c);
             }
-            else if (leuDigito)
+            else if (LEU_DIGITO)
             {
                 mudaEstadoEIncrementaDigito(&estado, 3, digitos, &tamD, c);
             }
-            else if (leuSinalDeIgual)
+            else if (LEU_SINAL_DE_IGUAL)
             {
                 mudaEstadoEIncrementaLexema(&estado, 27, lexema, &tamL, c);
             }
@@ -394,14 +391,14 @@ TOKEN AnaLex(FILE *fd)
                 mudaEstadoEIncrementaLexema(&estado, 15, lexema, &tamL, c);
             }
 
-            else if (leuQuebraDeLinha)
+            else if (LEU_QUEBRA_DE_LINHA)
             {
                 estado = 0;
                 t.cat = FIM_EXPR; // fim de linha (ou expressao) encontrado
                 contLinha++;
                 return t;
             }
-            else if (leuFimDeLinha)
+            else if (LEU_FIM_DE_LINHA)
             {
                 t.cat = FIM_ARQ;
                 return t;
@@ -411,7 +408,7 @@ TOKEN AnaLex(FILE *fd)
 
             break;
         case 1:
-            if (leuLetraOuDigitoOuUnderscore)
+            if (LEU_LETRA_OU_DIGITO_OU_UNDERSCORE)
             {
                 mudaEstadoEIncrementaLexema(&estado, 1, lexema, &tamL, c);
             }
@@ -428,11 +425,11 @@ TOKEN AnaLex(FILE *fd)
             break;
 
         case 3:
-            if (leuDigito)
+            if (LEU_DIGITO)
             {
                 mudaEstadoEIncrementaDigito(&estado, 3, digitos, &tamD, c);
             }
-            else if (leuPonto)
+            else if (LEU_PONTO)
             {
                 mudaEstadoEIncrementaDigito(&estado, 5, digitos, &tamD, c);
             }
@@ -442,7 +439,7 @@ TOKEN AnaLex(FILE *fd)
             }
             break;
         case 5:
-            if (leuDigito)
+            if (LEU_DIGITO)
             {
                 mudaEstadoEIncrementaDigito(&estado, 6, digitos, &tamD, c);
             }
@@ -452,7 +449,7 @@ TOKEN AnaLex(FILE *fd)
             }
             break;
         case 6:
-            if (leuDigito)
+            if (LEU_DIGITO)
             {
                 mudaEstadoEIncrementaDigito(&estado, 6, digitos, &tamD, c);
             }
@@ -547,7 +544,7 @@ TOKEN AnaLex(FILE *fd)
             else if (LEU_ASTERISCO) {
                 mudaEstadoEIncrementaLexema(&estado, 19, lexema, &tamL, c);
             }
-            else if (leuFimDeLinha){
+            else if (LEU_FIM_DE_LINHA){
                 error("Comentário de bloco não fechado.");
             } 
             else {
@@ -558,7 +555,7 @@ TOKEN AnaLex(FILE *fd)
             if (LEU_ASTERISCO) {
                 mudaEstadoEIncrementaLexema(&estado, 19, lexema, &tamL, c);
             }
-            else if (leuFimDeLinha){
+            else if (LEU_FIM_DE_LINHA){
                 error("Comentário de bloco não fechado.");
             }
             else {
@@ -567,7 +564,7 @@ TOKEN AnaLex(FILE *fd)
             break;
 
         case 21:
-            if (leuSinalDeIgual)
+            if (LEU_SINAL_DE_IGUAL)
             {
                 return reconheceMaiorOuIgual(&estado);
             }
@@ -578,7 +575,7 @@ TOKEN AnaLex(FILE *fd)
             break;
 
         case 24:
-            if (leuSinalDeIgual)
+            if (LEU_SINAL_DE_IGUAL)
             {
                 return reconheceMenorOuIgual(&estado);
             }
@@ -589,7 +586,7 @@ TOKEN AnaLex(FILE *fd)
             break;
 
         case 27:
-            if (leuSinalDeIgual)
+            if (LEU_SINAL_DE_IGUAL)
             {
                 return reconheceComparacao(&estado);
             }
@@ -599,7 +596,7 @@ TOKEN AnaLex(FILE *fd)
             }
             break;
         case 40:
-            if (leuSinalDeIgual)
+            if (LEU_SINAL_DE_IGUAL)
             {
                 return reconheceDiferente(&estado);
             }
