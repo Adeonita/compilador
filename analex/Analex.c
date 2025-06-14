@@ -243,6 +243,14 @@ TOKEN reconheceQuebraDeLinha(int *estado, FILE *fd, char *lexema, int *tamL, cha
     return t;
 }
 
+TOKEN reonheceFimExpr(int *estado, FILE *fd, char *lexema, int *tamL, char c)
+{
+    TOKEN t;
+    ungetc(c, fd);
+    t.cat = FIM_EXPR;
+    strcpy(t.lexema, lexema);
+    return t;
+}
 
 
 TOKEN AnaLex(FILE *fd)
@@ -288,6 +296,7 @@ TOKEN AnaLex(FILE *fd)
         bool LEU_ASPAS_DUPLAS = c == '"';
         bool LEU_CARACTERE = c != '\'' && c != '\\';
         bool LEU_QUEBRA_DE_LINHA = c =='n';
+        bool LEU_BARRA_ZERO = c == '0';
 
         bool LEU_MAIOR_QUE = c == '>';
         bool LEU_MENOR_QUE = c == '<';
@@ -482,6 +491,9 @@ TOKEN AnaLex(FILE *fd)
             if (LEU_QUEBRA_DE_LINHA){
                 mudaEstadoEIncrementaLexema(&estado, 11, lexema, &tamL, c);
             }
+            else if (LEU_BARRA_ZERO) {
+                mudaEstadoEIncrementaLexema(&estado, 13, lexema, &tamL, c);
+            }
             else {
                 error("Caractere inválido no Estado 10");
             }
@@ -494,6 +506,16 @@ TOKEN AnaLex(FILE *fd)
         case 12:
             return reconheceQuebraDeLinha(&estado, fd, lexema, &tamL, c);
             break;
+        case 13:
+            if (LEU_ASPAS_SIMPLES) {
+                mudaEstadoEIncrementaLexema(&estado, 14, lexema, &tamL, c);
+            }
+            else {
+                error("Caractere inválido no Estado 13");
+            }
+            break;
+        case 14:
+            return reonheceFimExpr(&estado, fd, lexema, &tamL, c);
         case 15:
             if (LEU_CARACTERE && !LEU_ASPAS_DUPLAS) {
                 mudaEstadoEIncrementaLexema(&estado, 15, lexema, &tamL, c);
