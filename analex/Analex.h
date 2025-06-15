@@ -37,25 +37,5 @@ typedef
     } TOKEN;
 
 #endif
-/* Contador de linhas do código fonte */ 
 
-int contLinha = 1; 
-
-typedef struct {
-    char *palavra;
-    int codigo;
-} PalavraReservada;
-
-PalavraReservada palavras[] = {
-    {"if", PR_IF},
-    {"else", PR_ELSE},
-    {"while", PR_WHILE},
-    {"for", PR_FOR},
-    {"return", PR_RETURN},
-    {"int", PR_INT},
-    {"float", PR_FLOAT},
-    {"char", PR_CHAR},
-    {"void", PR_VOID},
-};
-
-#define QTD_PR (sizeof(palavras) / sizeof(PalavraReservada))
+extern int contLinha;

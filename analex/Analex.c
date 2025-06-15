@@ -4,9 +4,32 @@
 #include <string.h>
 #include <stdbool.h>
 #include "Analex.h"
+#include "tabela_simbolos.h"
+
 
 #define TAM_LEXEMA 50
 #define TAM_NUM 20
+#define QTD_PR (sizeof(palavras) / sizeof(PalavraReservada))
+
+int contLinha = 1; // Contador de linhas do código fonte
+
+typedef struct {
+    char *palavra;
+    int codigo;
+} PalavraReservada;
+
+PalavraReservada palavras[] = {
+    {"if", PR_IF},
+    {"else", PR_ELSE},
+    {"while", PR_WHILE},
+    {"for", PR_FOR},
+    {"return", PR_RETURN},
+    {"int", PR_INT},
+    {"float", PR_FLOAT},
+    {"char", PR_CHAR},
+    {"void", PR_VOID},
+};
+
 
 void error(char msg[])
 {
@@ -270,11 +293,12 @@ TOKEN reconheceId(int *estado, FILE *fd, char *lexema, int *tamL, char c) {
         strcpy(t.lexema, lexema);
 
         mudaEstadoEIncrementaLexema(estado, 2, lexema, tamL, c);
-       // insereNaTabela(lexema); // insere na tabela de símbolos
+        insereNaTabela(lexema); // insere na tabela de símbolos
     }
 
     return t;
 }
+
 
 TOKEN AnaLex(FILE *fd)
 {
@@ -654,6 +678,8 @@ TOKEN AnaLex(FILE *fd)
 
 int main()
 {
+    inicializaTabela();
+
     printf("inicio");
     FILE *fd;
     TOKEN tk;
@@ -795,6 +821,8 @@ int main()
         if (tk.cat == FIM_ARQ)
             break;
     }
+
+    imprimeTabela();
 
     fclose(fd);
 
