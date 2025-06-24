@@ -7,7 +7,7 @@
 #include "tabela_simbolos.h"
 
 
-#define TAM_LEXEMA 50
+#define TAM_LEXEMA 100
 #define TAM_NUM 20
 #define QTD_PR (sizeof(palavras) / sizeof(PalavraReservada))
 
@@ -258,7 +258,8 @@ TOKEN reconheceString(int *estado, FILE *fd, char *lexema, int *tamL, char c)
     TOKEN t;
     ungetc(c, fd);
     t.cat = STRINGCON;
-    strcpy(t.lexema, lexema);
+    t.string = strdup(lexema);
+    // strcpy(t.lexema, lexema);
     return t;
 }
 
@@ -803,7 +804,8 @@ int main()
             break;
         
         case STRINGCON:
-            printf("<STRINGCON, %s> ", tk.lexema);
+            printf("<STRINGCON, %s> ", tk.string);
+            free(tk.string);
             break;
         case QUEBRA_DE_LINHA:
             printf("<QUEBRA_DE_LINHA, %s> ", tk.lexema);
