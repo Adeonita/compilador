@@ -1,6 +1,6 @@
 #ifndef ANALEX
 #define ANALEX 
-#define TAM_MAX_LEXEMA 31 
+#define TAM_MAX_LEXEMA 310 
 
 #define PR_IF 1
 #define PR_ELSE 2
@@ -33,6 +33,7 @@ typedef
             char lexema[TAM_MAX_LEXEMA];
             int valInt;
             float realVal;
+            char *string;
         }; 
     } TOKEN;
 
