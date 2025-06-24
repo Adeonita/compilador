@@ -37,6 +37,11 @@ typedef
         }; 
     } TOKEN;
 
-#endif
+TOKEN AnaLex(FILE *fd);
+void error(char msg[]);
+
 
 extern int contLinha;
+
+#endif
+
